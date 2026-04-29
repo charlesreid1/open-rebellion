@@ -2616,6 +2616,9 @@ async fn main() {
                         rebellion_render::panels::missions::MissionsTab::Dispatch;
                     show_missions = true;
                 }
+                PanelAction::FocusFleetSystem(_) => {
+                    show_fleets = true;
+                }
                 PanelAction::InitiateFleetMove { destination } => {
                     fleets_state.pending_move_destination = Some(*destination);
                     show_fleets = true;
