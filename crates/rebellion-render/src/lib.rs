@@ -283,11 +283,12 @@ pub fn draw_galaxy_map(world: &GameWorld, state: &mut GalaxyMapState) -> CameraV
     }
 
     // ── Click to select ───────────────────────────────────────────────────────
-    if is_mouse_button_pressed(MouseButton::Left) && mx < map_width {
+    // When a context menu is open, skip left-click selection so the click
+    // reaches the menu buttons (egui processes after macroquad).
+    let context_menu_open =
+        state.context_menu_system.is_some() || state.context_menu_fleet.is_some();
+    if is_mouse_button_pressed(MouseButton::Left) && mx < map_width && !context_menu_open {
         state.selected_system = state.hovered_system;
-        // Left-click anywhere dismisses context menus.
-        state.context_menu_system = None;
-        state.context_menu_fleet = None;
     }
 
     // ── Right-click context menu ─────────────────────────────────────────────
