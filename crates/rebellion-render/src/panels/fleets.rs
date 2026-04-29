@@ -338,8 +338,29 @@ pub fn draw_fleets(
                                 }
                             }
 
+                            // ── Move to destination (when context menu initiated) ──
+                            if let Some(dest_key) = state.pending_move_destination {
+                                if !this_in_transit && fleet.location != dest_key {
+                                    let dest_name = world
+                                        .systems
+                                        .get(dest_key)
+                                        .map(|s| s.name.as_str())
+                                        .unwrap_or("Unknown");
+                                    ui.add_space(4.0);
+                                    if ui.button(
+                                        RichText::new(format!("Move to {}", dest_name))
+                                            .color(theme::ALLIANCE_BLUE)
+                                            .size(11.0),
+                                    ).clicked() {
+                                        action = Some(PanelAction::OrderFleetMovement {
+                                            fleet: fleet_key,
+                                            destination: dest_key,
+                                        });
+                                    }
+                                }
+                            }
+
                             // ── Navigation ───────────────────────────────
-                            ui.add_space(4.0);
                             if ui.button(
                                 RichText::new("Go to System")
                                     .color(theme::GOLD)

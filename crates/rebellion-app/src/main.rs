@@ -2619,6 +2619,9 @@ async fn main() {
                 PanelAction::FocusFleetSystem(_) => {
                     show_fleets = true;
                 }
+                PanelAction::OrderFleetMovement { .. } => {
+                    fleets_state.pending_move_destination = None;
+                }
                 PanelAction::InitiateFleetMove { destination } => {
                     fleets_state.pending_move_destination = Some(*destination);
                     show_fleets = true;
@@ -2813,6 +2816,17 @@ fn apply_panel_action(
                 "Fleets merged".to_string(),
                 MessageCategory::Event,
             ));
+        }
+        PanelAction::OrderFleetMovement { fleet, destination } => {
+            if let Some(f) = world.fleets.get(fleet) {
+                let origin = f.location;
+                if origin != destination && movement_state.get(fleet).is_none() {
+                    let ticks = rebellion_core::movement::fleet_transit_ticks(
+                        f, world, origin, destination,
+                    );
+                    movement_state.order(fleet, origin, destination, ticks);
+                }
+            }
         }
         PanelAction::Enqueue {
             system,

@@ -147,6 +147,11 @@ pub enum PanelAction {
     InitiateFleetMove {
         destination: SystemKey,
     },
+    /// Order a specific fleet to move to a destination system.
+    OrderFleetMovement {
+        fleet: FleetKey,
+        destination: SystemKey,
+    },
 
     // ── Bombardment ──────────────────────────────────────────────────
     /// Order orbital bombardment from a fleet against its current system.
