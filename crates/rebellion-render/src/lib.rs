@@ -920,7 +920,7 @@ pub fn draw_system_context_menu(
     let mut action = None;
     let mut keep_open = true;
 
-    egui::Window::new("system_context")
+    let window_response = egui::Window::new("system_context")
         .title_bar(false)
         .resizable(false)
         .collapsible(false)
@@ -1086,6 +1086,15 @@ pub fn draw_system_context_menu(
             }
         });
 
+    // Dismiss on left-click outside the menu.
+    if let Some(ptr_pos) = ctx.input(|i| i.pointer.interact_pos()) {
+        if ctx.input(|i| i.pointer.primary_pressed())
+            && window_response.as_ref().is_some_and(|r| !r.response.rect.contains(ptr_pos))
+        {
+            keep_open = false;
+        }
+    }
+
     if !keep_open {
         state.context_menu_system = None;
     }
@@ -1109,7 +1118,7 @@ pub fn draw_fleet_context_menu(
     let mut action = None;
     let mut keep_open = true;
 
-    egui::Window::new("fleet_context")
+    let window_response = egui::Window::new("fleet_context")
         .title_bar(false)
         .resizable(false)
         .collapsible(false)
@@ -1235,6 +1244,15 @@ pub fn draw_fleet_context_menu(
                 keep_open = false;
             }
         });
+
+    // Dismiss on left-click outside the menu.
+    if let Some(ptr_pos) = ctx.input(|i| i.pointer.interact_pos()) {
+        if ctx.input(|i| i.pointer.primary_pressed())
+            && window_response.as_ref().is_some_and(|r| !r.response.rect.contains(ptr_pos))
+        {
+            keep_open = false;
+        }
+    }
 
     if !keep_open {
         state.context_menu_fleet = None;
