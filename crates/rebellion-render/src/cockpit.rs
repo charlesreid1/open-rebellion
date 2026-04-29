@@ -203,11 +203,7 @@ impl CockpitState {
 ///
 /// Call before `egui_macroquad::ui` so the chrome renders beneath egui panels.
 /// Returns the viewport reserved for the galaxy map.
-pub fn draw_cockpit_chrome(
-    state: &CockpitState,
-    cache: &mut BmpCache,
-    ctx: &egui::Context,
-) -> CockpitViewport {
+pub fn draw_cockpit_chrome(state: &CockpitState) -> CockpitViewport {
     let sw = screen_width();
     let sh = screen_height();
 
@@ -249,19 +245,7 @@ pub fn draw_cockpit_chrome(
     // Thin accent line at top of bottom bar
     draw_rectangle(0.0, bottom_y, sw, 2.0, accent_color);
 
-    // Try to load galaxy background texture (STRATEGY.DLL id 900).
-    // This renders behind the galaxy dots when present.
-    // (We can't scissor/clip macroquad draw calls to the viewport without
-    // a render target, so we just draw it across the map area.)
-    let vp = state.galaxy_viewport();
-    if let Some(tex) = cache.get(ctx, DllSource::Strategy, 900) {
-        let size = egui::vec2(vp.width, vp.height);
-        // The texture is registered in egui; we draw it via egui's painter
-        // in a transparent overlay pass inside draw_cockpit_egui_layer.
-        let _ = (tex, size); // consumed in the egui layer below
-    }
-
-    vp
+    state.galaxy_viewport()
 }
 
 /// Draw egui-layer cockpit elements: control button bar.

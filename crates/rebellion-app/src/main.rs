@@ -1931,20 +1931,7 @@ async fn main() {
             GameMode::Galaxy => {
                 // 1. Cockpit chrome (pure macroquad) — draws top/bottom bars,
                 //    returns the viewport rect available for the galaxy map.
-                //    We need an egui context for the BmpCache texture registration,
-                //    but draw_cockpit_chrome is called before the egui pass so we
-                //    pass a dummy context ref via a temporary egui_macroquad scope.
-                //    The chrome bars themselves use only macroquad draw calls.
-                let cockpit_vp = {
-                    // Use a temporary egui context scope just for texture registration.
-                    // The returned viewport is used below.
-                    let mut vp_out = None;
-                    egui_macroquad::ui(|ctx| {
-                        vp_out = Some(draw_cockpit_chrome(&cockpit_state, &mut bmp_cache, ctx));
-                    });
-                    egui_macroquad::draw();
-                    vp_out.unwrap_or_else(|| cockpit_state.galaxy_viewport())
-                };
+                let cockpit_vp = draw_cockpit_chrome(&cockpit_state);
 
                 // Pass cockpit viewport to galaxy map for mouse input clamping.
                 map_state.viewport = Some((
