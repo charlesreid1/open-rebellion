@@ -58,6 +58,11 @@ pub fn load_game_data_with_options(
             textstra::load_strings(&textstra_path)
                 .with_context(|| format!("loading strings from {}", textstra_path.display()))?
         } else {
+            eprintln!(
+                "WARNING: TEXTSTRA.DLL not found at {} — entity names will show as \"System 12128\", \"Character 10369\", etc. \
+                 Copy TEXTSTRA.DLL from your game's GData directory to fix.",
+                textstra_path.display()
+            );
             HashMap::new()
         }
     };
